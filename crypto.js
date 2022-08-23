@@ -1,7 +1,6 @@
-importPublicKeyAndEncrypt();
-    
-async function encodeText(key, text) {
+// source: https://stackoverflow.com/questions/62948516/using-native-javascript-subtlecrypto-to-encrypt-using-rsa
 
+export async function encodeText(key, text) {
     try {
         const pub = await importPublicKey(key);
         const encrypted = await encryptRSA(pub, new TextEncoder().encode(text));
@@ -9,7 +8,7 @@ async function encodeText(key, text) {
         return encryptedBase64.replace(/(.{64})/g, "$1\n"); 
     }
     catch(error) {
-        console.log(error);
+      console.log(error);
     }
 }
 
