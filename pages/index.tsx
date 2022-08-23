@@ -43,16 +43,20 @@ const Home: NextPage = () => {
 
   return (
     <main className="container mx-auto p-2">
+      <h1 className="text-2xl px-2 mb-4">Public key encoder</h1>
       <div className="flex flex-row">
-        <div className="flex-initial w-32 px-2">
-          <button
-            className="block uppercase shadow bg-indigo-800 hover:bg-indigo-700 focus:shadow-outline focus:outline-none text-white text-xs py-2 px-5 rounded mb-4"
-            onClick={() => setIsAddingNew(!isAddingNew)}
-          >
-            {isAddingNew ? 'Cancel' : 'Add new'}
-          </button>
+        <div className="flex-initial w-48 px-2 border-r mr-3">
+          <div className='flex justify-between'>
+            <p className="text-xl mb-3">Keys</p>
+            <button
+              className="block uppercase shadow bg-indigo-800 hover:bg-indigo-700 focus:shadow-outline focus:outline-none text-white text-xs py-2 px-5 rounded mb-4"
+              onClick={() => setIsAddingNew(!isAddingNew)}
+            >
+              {isAddingNew ? 'Cancel' : 'Add new'}
+            </button>
 
-          <p className="mb-3">Keys</p>
+          </div>
+          
 
           <ul className="list-none">
             {localKeys.map((key, i) => (
