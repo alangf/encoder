@@ -2,7 +2,6 @@ import type { NextPage } from 'next';
 import cn from 'classnames';
 import { useState, useMemo } from 'react';
 import useLocalStorage from 'use-local-storage';
-import copy from 'copy-to-clipboard';
 
 import Label from '../components/Label';
 
@@ -44,8 +43,8 @@ const Home: NextPage = () => {
   return (
     <main className="container mx-auto p-2">
       <h1 className="text-2xl px-2 mb-4">Public key encoder</h1>
-      <div className="flex flex-row">
-        <div className="flex-initial w-48 px-2 border-r mr-3">
+      <div className="flex flex-row min-h-screen">
+        <div className="flex-initial w-48 pl-2 pr-4 border-r mr-4">
           <div className='flex justify-between'>
             <p className="text-xl mb-3">Keys</p>
             <button
@@ -54,10 +53,8 @@ const Home: NextPage = () => {
             >
               {isAddingNew ? 'Cancel' : 'Add new'}
             </button>
-
           </div>
           
-
           <ul className="list-none">
             {localKeys.map((key, i) => (
               <li
