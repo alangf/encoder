@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import cn from 'classnames';
 import { useState, useMemo, useEffect } from 'react';
 import useLocalStorage from 'use-local-storage';
+import copy from 'copy-to-clipboard'
 
 import { encodeText } from '../crypto'
 
@@ -21,6 +22,7 @@ const Home: NextPage = () => {
   const [isLoaded, setIsLoaded] = useState<Boolean>(false);
   const [from, setFrom] = useState<string>('');
   const [to, setTo] = useState<string>('');
+  const [showCopied, setShowCopied] = useState<Boolean>(false)
 
   const keyExists = useMemo<boolean>(
     () => !!localKeys.find((key) => key.name === newName),
@@ -62,6 +64,12 @@ const Home: NextPage = () => {
   }
 
   const selectKey = (name: string) => setCurrentKey(currentKey === name ? null : name)
+
+  const copyTo = () => {
+    copy(to)
+    setShowCopied(true)
+    setTimeout(() => setShowCopied(false), 2000)
+  }
 
   return (
     <main className="container mx-auto p-2">
@@ -163,6 +171,17 @@ const Home: NextPage = () => {
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
               />
+
+              <div className='flex'>
+                <Button
+                  className="disabled:bg-gray-200"
+                  disabled={!to}
+                  onClick={copyTo}
+                >
+                  Copy to clipboard
+                </Button>
+                {showCopied && <span className='text-green-500 text-sm ml-2 flex items-center'>Encoded text copied to clipboard</span>}
+              </div>
             </div>
           )}
           {isLoaded && !isAddingNew && !currentKey && <span className='text-xl'>{
