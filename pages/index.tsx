@@ -3,7 +3,7 @@ import cn from 'classnames';
 import { useState, useMemo, useEffect } from 'react';
 import useLocalStorage from 'use-local-storage';
 
-import Label from '../components/Label';
+import { Label, Input, Button} from '../components/Form';
 
 interface LocalKey {
   name: string;
@@ -53,12 +53,12 @@ const Home: NextPage = () => {
         <div className="flex-initial w-48 pl-2 pr-4 border-r mr-4">
           <div className='flex justify-between'>
             <p className="text-xl mb-3">Keys</p>
-            <button
-              className="block uppercase shadow bg-indigo-800 hover:bg-indigo-700 focus:shadow-outline focus:outline-none text-white text-xs py-2 px-5 rounded mb-4"
+            <Button
+              className="mb-4"
               onClick={() => setIsAddingNew(!isAddingNew)}
             >
               {isAddingNew ? 'Cancel' : 'Add new'}
-            </button>
+            </Button>
           </div>
           
           <ul className="list-none">
@@ -85,9 +85,9 @@ const Home: NextPage = () => {
             <div>
               <div>
                 <Label htmlFor="newName">Name:</Label>
-                <input
+                <Input
                   name="newName"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-2"
+                  className="mb-2"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                 />
@@ -99,19 +99,20 @@ const Home: NextPage = () => {
               </div>
               <div>
                 <Label htmlFor="newKey">Key:</Label>
-                <textarea
+                <Input
+                  type="textarea"
                   name="newKey"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-4"
+                  className="mb-4"
                   value={newKey}
                   onChange={(e) => setNewKey(e.target.value)}
                 />
-                <button
-                  className="block uppercase shadow bg-indigo-800 hover:bg-indigo-700 focus:shadow-outline focus:outline-none text-white text-xs py-2 px-5 rounded disabled:bg-gray-200"
+                <Button
+                  className="disabled:bg-gray-200"
                   disabled={!newName || !newKey || keyExists}
                   onClick={saveNewKey}
                 >
                   Save
-                </button>
+                </Button>
               </div>
             </div>
           )}
