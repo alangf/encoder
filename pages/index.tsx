@@ -3,6 +3,8 @@ import cn from 'classnames';
 import { useState, useMemo, useEffect } from 'react';
 import useLocalStorage from 'use-local-storage';
 
+import { encodeText } from '../crypto'
+
 import { Label, Input, Button} from '../components/Form';
 
 interface LocalKey {
@@ -12,11 +14,13 @@ interface LocalKey {
 
 const Home: NextPage = () => {
   const [localKeys, setLocalKeys] = useLocalStorage<LocalKey[]>('keys', []);
-  const [currentKey, setCurrentKey] = useState<LocalKey | null>(null);
+  const [currentKey, setCurrentKey] = useState<string | null>(null);
   const [isAddingNew, setIsAddingNew] = useState<Boolean>(false);
   const [newName, setNewName] = useState<string>('');
   const [newKey, setNewKey] = useState<string>('');
   const [isLoaded, setIsLoaded] = useState<Boolean>(false);
+  const [from, setFrom] = useState<string>('');
+  const [to, setTo] = useState<string>('');
 
   const keyExists = useMemo<boolean>(
     () => !!localKeys.find((key) => key.name === newName),
@@ -39,11 +43,25 @@ const Home: NextPage = () => {
   const removeKey = (name: string) => {
     if (confirm('sure?'))
       setLocalKeys(localKeys.filter((key) => key.name !== name));
+    if (currentKey === name)
+      setCurrentKey(null)
   };
 
   useEffect(() => {
     setIsLoaded(true)
   }, [])
+
+  const encode = async () => {
+    if (currentKey) {
+      const key = localKeys.find(key => key.name === currentKey)
+      if (key) {
+        setTo(await encodeText(key.key, from) as string)
+      }
+    }
+      
+  }
+
+  const selectKey = (name: string) => setCurrentKey(currentKey === name ? null : name)
 
   return (
     <main className="container mx-auto p-2">
@@ -65,17 +83,17 @@ const Home: NextPage = () => {
             {isLoaded && localKeys.map((key, i) => (
               <li
                 key={`key_${i}`}
-                className={cn('', {
-                  'bg-blue-300': currentKey?.key === key.name,
+                className={cn('flex mb-2 p-1', {
+                  'bg-indigo-300 rounded': currentKey === key.name,
                 })}
               >
                 <button
-                  className="bg-red-500 text-white px-1 text-sm mr-2 cursor-pointer"
+                  className="bg-red-500 text-white px-1 text-sm mr-2 cursor-pointer rounded"
                   onClick={() => removeKey(key.name)}
                 >
                   X
                 </button>
-                <button onClick={() => setCurrentKey(key)}>{key.name}</button>
+                <button className="flex-1 text-left" onClick={() => selectKey(key.name)}>{key.name}</button>
               </li>
             ))}
           </ul>
@@ -86,6 +104,7 @@ const Home: NextPage = () => {
               <div>
                 <Label htmlFor="newName">Name:</Label>
                 <Input
+                  type="text"
                   name="newName"
                   className="mb-2"
                   value={newName}
@@ -116,11 +135,41 @@ const Home: NextPage = () => {
               </div>
             </div>
           )}
-          {!isAddingNew && (
+          {!isAddingNew && currentKey && (
             <div>
               <h2 className="text-xl mb-4">Encode</h2>
+
+              <Label htmlFor="from">Text to encode:</Label>
+              <Input
+                type="textarea"
+                name="from"
+                className="mb-4"
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+              />
+              <Button
+                className="disabled:bg-gray-200 mb-4"
+                onClick={encode}
+              >
+                Encode
+              </Button>
+
+              <Label htmlFor="to">Encoded:</Label>
+              <Input
+                type="textarea"
+                name="to"
+                readOnly
+                className="mb-4"
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+              />
             </div>
           )}
+          {isLoaded && !isAddingNew && !currentKey && <span className='text-xl'>{
+            localKeys.length
+              ? 'Please add a new key to start encoding'
+              : 'Please select a key to start encoding.'
+          }</span>}
         </div>
       </div>
     </main>
