@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import cn from 'classnames';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import useLocalStorage from 'use-local-storage';
 
 import Label from '../components/Label';
@@ -16,6 +16,7 @@ const Home: NextPage = () => {
   const [isAddingNew, setIsAddingNew] = useState<Boolean>(false);
   const [newName, setNewName] = useState<string>('');
   const [newKey, setNewKey] = useState<string>('');
+  const [isLoaded, setIsLoaded] = useState<Boolean>(false);
 
   const keyExists = useMemo<boolean>(
     () => !!localKeys.find((key) => key.name === newName),
@@ -40,9 +41,14 @@ const Home: NextPage = () => {
       setLocalKeys(localKeys.filter((key) => key.name !== name));
   };
 
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
+
   return (
     <main className="container mx-auto p-2">
       <h1 className="text-2xl px-2 mb-4">Public key encoder</h1>
+
       <div className="flex flex-row min-h-screen">
         <div className="flex-initial w-48 pl-2 pr-4 border-r mr-4">
           <div className='flex justify-between'>
@@ -56,7 +62,7 @@ const Home: NextPage = () => {
           </div>
           
           <ul className="list-none">
-            {localKeys.map((key, i) => (
+            {isLoaded && localKeys.map((key, i) => (
               <li
                 key={`key_${i}`}
                 className={cn('', {
